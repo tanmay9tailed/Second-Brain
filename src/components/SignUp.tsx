@@ -28,11 +28,11 @@ const SignUp = () => {
         password: formData.password,
       })
       .then((response) => {
-        // console.log("SignUp Response:", response.data);
-        if(response.data.errorResponse.errmsg){
-          setError(response.data.errorResponse.errmsg);
-        }else{
+        console.log("SignUp Response:", response.data);
+        if(response.data.message === "user signed up"){
           navigate("/signin");
+        }else{
+          setError(response.data.errorResponse.errmsg);
         }
       })
       .catch((error) => {
