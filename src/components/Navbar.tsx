@@ -36,7 +36,8 @@ const Navbar: React.FC<NavbarProps> = ({ setOpenSideBar, openSideBar, setAdded }
           },
         }
       );
-      setShareUrl(`https://second-brain-iq3h.onrender.com/shared/${response.data.link}`);
+      const geturl = window.location.href
+      setShareUrl(`${geturl}/shared/${response.data.link}`);
     } catch (error) {
       console.error("Error fetching share URL:", error);
       alert("Failed to fetch the share URL.");
