@@ -1,7 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+interface SharedCardsProps {
+  title: string;
+  type: "youtube" | "twitter"; // Restrict type to "youtube" or "twitter"
+  link: string;
+}
 
-const SharedCards = ({ title, type, link }) => {
-  const [embedLink, setEmbedLink] = useState(link);
+const SharedCards: React.FC<SharedCardsProps> = ({ title, type, link }) => {
+  const [embedLink, setEmbedLink] = useState<string>(link);
 
   const embededLink = () => {
     if (type === "youtube") {

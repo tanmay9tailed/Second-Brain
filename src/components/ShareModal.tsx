@@ -1,6 +1,12 @@
-import React from 'react';
+interface ShareModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  onDelete: () => void;
+  shareUrl?: string;
+}
 
-const ShareModal = ({ isOpen, onClose, onConfirm, onDelete, shareUrl }) => {
+const ShareModal: React.FC<ShareModalProps> = ({ isOpen, onClose, onConfirm, onDelete, shareUrl }) => {
   if (!isOpen) return null; 
 
   return (

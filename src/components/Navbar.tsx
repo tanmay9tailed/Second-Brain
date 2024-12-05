@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Button from "./ui/Button";
 import PlusIcon from "../icons/PlusIcon";
 import Share from "../icons/Share";
@@ -7,15 +7,24 @@ import axios from "axios";
 import { URL } from "../config";
 import ShareModal from "./ShareModal";
 
-const Navbar = ({ setOpenSideBar, openSideBar, setAdded }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isShareModalOpen, setIsShareModalOpen] = useState(false); 
-  const [shareUrl, setShareUrl] = useState(""); 
+// Define types for the Navbar props
+interface NavbarProps {
+  setOpenSideBar: React.Dispatch<React.SetStateAction<boolean>>;
+  openSideBar: boolean;
+  setAdded: React.Dispatch<React.SetStateAction<number>>;
+}
 
+const Navbar: React.FC<NavbarProps> = ({ setOpenSideBar, openSideBar, setAdded }) => {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState<boolean>(false);
+  const [shareUrl, setShareUrl] = useState<string>("");
+
+  // Toggle sidebar visibility
   const handleSideBar = () => {
     setOpenSideBar(!openSideBar);
   };
 
+  // Fetch the shareable URL
   const fetchShareUrl = async () => {
     try {
       const response = await axios.post(
@@ -23,7 +32,7 @@ const Navbar = ({ setOpenSideBar, openSideBar, setAdded }) => {
         { share: true },
         {
           headers: {
-            Authorization: localStorage.getItem("token"),
+            Authorization: localStorage.getItem("token") || "",
           },
         }
       );
@@ -34,6 +43,7 @@ const Navbar = ({ setOpenSideBar, openSideBar, setAdded }) => {
     }
   };
 
+  // Delete the shareable URL
   const deleteShareUrl = async () => {
     try {
       await axios.post(
@@ -41,11 +51,11 @@ const Navbar = ({ setOpenSideBar, openSideBar, setAdded }) => {
         { share: false },
         {
           headers: {
-            Authorization: localStorage.getItem("token"),
+            Authorization: localStorage.getItem("token") || "",
           },
         }
       );
-      setShareUrl(""); 
+      setShareUrl("");
       alert("Shareable link deleted successfully.");
     } catch (error) {
       console.error("Error deleting share URL:", error);
@@ -58,7 +68,7 @@ const Navbar = ({ setOpenSideBar, openSideBar, setAdded }) => {
       <div>
         <div
           className="w-10 z-[100] hover:bg-blue-700 text-white cursor-pointer p-1 rounded block sm:hidden"
-          onClick={() => handleSideBar()}
+          onClick={handleSideBar}
         >
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
             <path d="M4 18L20 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -67,22 +77,28 @@ const Navbar = ({ setOpenSideBar, openSideBar, setAdded }) => {
           </svg>
         </div>
       </div>
+
       <div className="flex gap-2 sm:gap-6">
+        {/* Share Button */}
         <Button
           text="Share"
           variant="secondary"
           size="md"
-          startIcon={<Share className={"w-6"} color={"#9333ea"} />}
+          startIcon={<Share className="w-6" color="#9333ea" />}
           onClick={() => setIsShareModalOpen(true)}
         />
+
+        {/* Add Content Button */}
         <Button
           text="Add Content"
           variant="primary"
           size="md"
-          startIcon={<PlusIcon className={"w-6 font-bold"} color={"white"} />}
+          startIcon={<PlusIcon className="w-6 font-bold" color="white" />}
           onClick={() => setIsModalOpen(true)}
         />
       </div>
+
+      {/* Add Content Modal */}
       <AddContentModel
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
@@ -93,23 +109,25 @@ const Navbar = ({ setOpenSideBar, openSideBar, setAdded }) => {
               { title, link, type },
               {
                 headers: {
-                  Authorization: localStorage.getItem("token"),
+                  Authorization: localStorage.getItem("token") || "",
                 },
               }
             )
-            .then((response) => {
-              setAdded(Math.random() * 10000);
+            .then(() => {
+              setAdded(Math.random() * 10000); // Refresh added content
             })
             .catch((error) => {
               console.error("Error in submitting content:", error);
             });
         }}
       />
+
+      {/* Share Modal */}
       <ShareModal
         isOpen={isShareModalOpen}
         onClose={() => setIsShareModalOpen(false)}
         onConfirm={fetchShareUrl}
-        onDelete={deleteShareUrl} 
+        onDelete={deleteShareUrl}
         shareUrl={shareUrl}
       />
     </div>

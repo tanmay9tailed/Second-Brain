@@ -1,8 +1,11 @@
-import axios from "axios";
-import React from "react";
+interface SideBarProps {
+  openSideBar: boolean;
+  setOpenSideBar: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
 import { useNavigate } from "react-router-dom";
 
-const SideBar = ({ setOpenSideBar, openSideBar }) => {
+const SideBar: React.FC<SideBarProps> = ({ openSideBar, setOpenSideBar }) => {
   const handleSideBar = () => {
     setOpenSideBar(!openSideBar);
   };
@@ -36,9 +39,7 @@ const SideBar = ({ setOpenSideBar, openSideBar }) => {
       {/* Sidebar Content */}
       <div className="h-full w-full flex flex-col justify-between items-center py-12 px-8">
         {/* Header */}
-        <h1 className="text-5xl font-bold text-blue-600 mb-16 tracking-wide drop-shadow-md">
-          Brain
-        </h1>
+        <h1 className="text-5xl font-bold text-blue-600 mb-16 tracking-wide drop-shadow-md">Brain</h1>
 
         {/* Navigation Links */}
         <div className="flex flex-col gap-4 w-full">

@@ -1,43 +1,49 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { URL } from "../config";
 
-const Cards = ({ title, type, link, contentId, setAdded }) => {
+interface CardsProps {
+  title: string;
+  type: string;
+  link: string;
+  contentId: string;
+  setAdded: React.Dispatch<React.SetStateAction<number>>;
+}
+
+const Cards: React.FC<CardsProps> = ({ title, type, link, contentId, setAdded }) => {
   const [embedLink, setEmbedLink] = useState(link);
 
   const embededLink = () => {
+    let newLink = link;
     if (type === "youtube") {
-      link = link.replace("watch?v=", "embed/");
-      if (link.includes("&")) {
-        const c = link.indexOf("&");
-        const n = link.length;
-        link = link.slice(0, c);
+      newLink = newLink.replace("watch?v=", "embed/");
+      if (newLink.includes("&")) {
+        const c = newLink.indexOf("&");
+        newLink = newLink.slice(0, c);
       }
     } else if (type === "twitter") {
-      link = link.replace("x", "twitter");
-      link = link + "?ref_src=twsrc%5Etfw";
+      newLink = newLink.replace("x", "twitter");
+      newLink += "?ref_src=twsrc%5Etfw";
     }
-    setEmbedLink(link);
+    setEmbedLink(newLink);
   };
 
   useEffect(() => {
     embededLink();
-  }, []);
+  }, [link, type]); 
 
-  const deleteContent = () => {
-    axios
-      .delete(`${URL}/api/v1/content`, {
+  const deleteContent = async () => {
+    try {
+      await axios.delete(`${URL}/api/v1/content`, {
         headers: {
           Authorization: localStorage.getItem("token"),
         },
         data: { contentId },
-      })
-      .then((response) => {
-        setAdded(Math.random() * 10000);
-      })
-      .catch((error) => {
-        console.error(error);
       });
+      setAdded(prev => prev + 1); 
+    } catch (error) {
+      console.error("Error deleting content:", error);
+    }
   };
 
   return (
@@ -48,14 +54,10 @@ const Cards = ({ title, type, link, contentId, setAdded }) => {
         </h1>
         <div
           className="p-2 rounded cursor-pointer bg-gray-200 group-hover:bg-red-500 transition-colors"
-          onClick={() => deleteContent()}
+          onClick={deleteContent}
+          aria-label="Delete content"
         >
-          <svg
-            fill="currentColor"
-            height="15px"
-            width="15px"
-            viewBox="0 0 290 290"
-          >
+          <svg fill="currentColor" height="15px" width="15px" viewBox="0 0 290 290">
             <g>
               <path d="M265,60h-30h-15V15c0-8.284-6.716-15-15-15H85c-8.284,0-15,6.716-15,15v45H55H25c-8.284,0-15,6.716-15,15s6.716,15,15,15 h5.215H40h210h9.166H265c8.284,0,15-6.716,15-15S273.284,60,265,60z M190,60h-15h-60h-15V30h90V60z"></path>
               <path d="M40,275c0,8.284,6.716,15,15,15h180c8.284,0,15-6.716,15-15V120H40V275z"></path>
