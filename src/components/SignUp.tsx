@@ -86,7 +86,7 @@ const SignUp = () => {
         </button>
         <p className="text-sm text-center mt-4">
           Already have and account{" "}
-          <a href="/signin" className="text-blue-500 hover:underline">
+          <a onClick={() => navigate("/signin")} className="text-blue-500 hover:underline">
             Sign In
           </a>
         </p>

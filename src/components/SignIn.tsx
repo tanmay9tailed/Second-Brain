@@ -91,7 +91,7 @@ const SignIn = () => {
         <p className="text-sm text-center mt-4">
           Don’t have an account?{" "}
           <a
-            href="/signup"
+            onClick={() => navigate("/signup")}
             className="text-blue-500 hover:underline"
           >
             Sign Up
