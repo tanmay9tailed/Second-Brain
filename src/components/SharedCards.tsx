@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 interface SharedCardsProps {
   title: string;
-  type: "youtube" | "twitter"; // Restrict type to "youtube" or "twitter"
+  type: "youtube" | "twitter"; 
   link: string;
 }
 
